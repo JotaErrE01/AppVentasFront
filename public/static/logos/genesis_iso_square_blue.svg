@@ -1,0 +1,20 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75.63 64.4">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #2b357f;
+      }
+    </style>
+  </defs>
+  <title>genesis_iso_square_white</title>
+  <g>
+    <path class="cls-1" d="M7.19,42.14,44.8,75.23,53.86,67s-2.56-12.61-16-20.88C24.71,38,7.19,42.14,7.19,42.14Z" transform="translate(-7.19 -10.83)"/>
+    <path class="cls-1" d="M56.62,65.18,82.81,43.32S77.5,39.78,64.1,41.75a31.12,31.12,0,0,0-16.93,8.47C47.36,50,54.26,55.73,56.62,65.18Z" transform="translate(-7.19 -10.83)"/>
+    <polygon class="cls-1" points="47.66 28.95 61.25 18.51 65.39 22.06 48.84 30.53 47.66 28.95"/>
+    <polygon class="cls-1" points="45.5 27.18 43.72 26.2 52.59 11.03 55.74 13.79 45.5 27.18"/>
+    <polygon class="cls-1" points="39.59 0 46.28 5.71 40.97 25.6 38.41 25.21 39.59 0"/>
+    <polygon class="cls-1" points="32.3 2.95 36.24 25.6 33.88 25.8 27.57 7.29 32.3 2.95"/>
+    <polygon class="cls-1" points="22.06 12.01 18.51 15.16 29.54 27.97 31.71 26.59 22.06 12.01"/>
+    <polygon class="cls-1" points="13.79 19.3 9.45 23.04 26.39 31.32 27.97 29.15 13.79 19.3"/>
+  </g>
+</svg>

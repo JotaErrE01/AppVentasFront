@@ -1,0 +1,137 @@
+import {
+	List,
+	Button,
+	Grid,
+	ListItem,
+	ListItemIcon,
+	ListItemText,
+	TextField,
+	Divider,
+	Checkbox,
+	Badge
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
+import React from 'react';
+
+import {
+	ChevronsDown as ChevronsDownIcon,
+	ChevronsUp as ChevronsUpIcon,
+	Filter as FilterIcon,
+	Check as CheckIcon
+} from 'react-feather';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+
+export const FilterForm = ({
+	valueRef,
+	orderBy,
+	orderMode,
+	textFilter,
+	catalogosMaestros,
+	catalogosMaestrosSelected,
+	onSelectCatalogoMaestro,
+	onSort,
+	onTextFilterChange,
+	onTodosClick,
+	onNingunoClick
+}) => {
+	const classes = useStyles();
+
+	return (
+		<List aria-label="main mailbox folders">
+			<ListItem button onClick={() => onSort(valueRef, 'asc')}>
+				<ListItemIcon>
+					{valueRef == orderBy && orderMode == 'asc' ? (
+						<Badge color="primary" variant="dot">
+							<ChevronsUpIcon />
+						</Badge>
+					) : (
+						<ChevronsUpIcon />
+					)}
+				</ListItemIcon>
+				<ListItemText primary="Ordenar de A-Z" />
+			</ListItem>
+			<Divider />
+			<ListItem button onClick={() => onSort(valueRef, 'desc')}>
+				<ListItemIcon>
+					{valueRef == orderBy && orderMode == 'desc' ? (
+						<Badge color="primary" variant="dot">
+							<ChevronsDownIcon />
+						</Badge>
+					) : (
+						<ChevronsDownIcon />
+					)}
+				</ListItemIcon>
+				<ListItemText primary="Ordenar de Z-A" />
+			</ListItem>
+			<Divider />
+			<ListItem>
+				<ListItemIcon>
+					<FilterIcon />
+				</ListItemIcon>
+				<ListItemText primary="Filtrar por" />
+			</ListItem>
+			<ListItem>
+				<Grid>
+					<Grid item>
+						<Button className={classes.btnTodosNinguno} onClick={onTodosClick}>
+							TODOS
+						</Button>
+						<Button className={classes.btnTodosNinguno} onClick={onNingunoClick}>
+							NINGUNO
+						</Button>
+					</Grid>
+					<Grid item>
+						<TextField
+							className={classes.search}
+							fullWidth
+							placeholder="Filtro"
+							// error={Boolean(errors.cat_id)}
+							// helperText={errors.cat_id}
+							// label="Cat_id"
+							name={valueRef}
+							// disabled={isLoading}
+							onChange={onTextFilterChange}
+							type="text"
+							value={textFilter}
+							variant="outlined"
+							// disabled
+						/>
+					</Grid>
+				</Grid>
+			</ListItem>
+			<PerfectScrollbar>
+				<div style={{ maxHeight: '8rem' }}>
+					{catalogosMaestros.map((catalogo, index) => {
+						return (
+							<div key={catalogo.id}>
+								<ListItem role={undefined} dense button onClick={() => onSelectCatalogoMaestro(index)}>
+									<ListItemIcon>
+										<Checkbox
+											icon={<div />}
+											checkedIcon={<CheckIcon className={classes.checkIcon} />}
+											edge="start"
+											checked={catalogosMaestrosSelected[index]}
+											tabIndex={-1}
+											disableRipple
+											inputProps={{ 'aria-labelledby': catalogo.cat_id }}
+										/>
+									</ListItemIcon>
+									<ListItemText id={catalogo.cat_id} primary={catalogo.cat_descripcion} />
+								</ListItem>
+								<Divider />
+							</div>
+						);
+					})}
+				</div>
+			</PerfectScrollbar>
+
+			{/* <Divider /> */}
+		</List>
+	);
+};
+
+const useStyles = makeStyles((theme) => ({
+	btnTodosNinguno: { color: '#2196F3' },
+	search: { width: '100%' },
+	checkIcon: { color: '#3D4852' }
+}));

@@ -1,0 +1,53 @@
+//DEVIAS RESPONSE
+
+const data_1 = {
+    accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZTg2ODA5MjgzZTI4Yjk2ZDJkMzg1MzciLCJpYXQiOjE2MDQ4MjA3NTcsImV4cCI6MTYwNDk5MzU1N30.u84oHIAK0LT64uKQaJeFB5m6f3aEK-Y5PO7tvHdjfYU",
+    user:{
+        avatar: "/static/images/avatars/avatar_6.png",
+        email: "demo@devias.io",
+        id: "5e86809283e28b96d2d38537",
+        name: "Katarina Smith",
+        tier: "Premium"
+    }
+}
+
+
+/// strapi respponse
+const data = {
+    "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjA0ODE5ODk0LCJleHAiOjE2MDc0MTE4OTR9.72MMn1ia8GKLdtYEwRqaKhjVxr7F0_AtoTq8nKqkZ1c",
+    "user": {
+        "id": 1,
+        "username": "darellano",
+        "email": "darellano@fondosgenesis.com",
+        "provider": "local",
+        "confirmed": false,
+        "blocked": false,
+        "role": {
+            "id": 1,
+            "name": "Authenticated",
+            "description": "Default role given to authenticated user.",
+            "type": "authenticated"
+        },
+        "created_at": "2020-11-08T07:17:59.000Z",
+        "updated_at": "2020-11-08T07:17:59.000Z"
+    }
+}
+
+{
+    "email": "darellano@afp.com",
+    "password": "AFPpass22"
+}
+
+{
+    "email": "darellano@fondosgenesis.com",
+    "password": "AFPpass22"
+}
+
+{
+     "email": "ing.pedro.h@gmail.com",
+     "password": "Admin1234.."
+}
+
+?email=darellano@fondosgenesis.com&password=AFPpass22
+
+0909141566
