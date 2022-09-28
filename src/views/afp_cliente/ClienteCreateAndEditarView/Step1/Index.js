@@ -17,9 +17,11 @@ import {
 	FormControlLabel,
 	FormLabel,
 	Typography,
+	Fab,
 	LinearProgress
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
+import SyncIcon from '@material-ui/icons/Sync';
 import usesStyles from '../usesStyles';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { useDispatch, useSelector } from 'src/store';
@@ -27,7 +29,7 @@ import { useSnackbar } from 'notistack';
 
 import * as dayjs from 'dayjs';
 
-import { postClientesEditar, postClientesCrear, getSearchClientLocal } from 'src/slices/clientes';
+import { postClientesEditar, postClientesCrear, getSearchClientLocal, getDatosCliente, validateDataPerson, updateDataClient } from 'src/slices/clientes';
 
 import _ from 'lodash';
 
@@ -44,7 +46,7 @@ function useQuery() {
 	return new URLSearchParams(useLocation().search);
 }
 
-let siNoValues = [ { text: 'SI', value: 1 }, { text: 'NO', value: 0 } ];
+let siNoValues = [{ text: 'SI', value: 1 }, { text: 'NO', value: 0 }];
 
 const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli, setPage, reloadCatalogos }) => {
 	const UsesStyles = { usesStyles };
@@ -53,12 +55,13 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 
 	const dispatch = useDispatch();
 	const { enqueueSnackbar } = useSnackbar();
-	const [ showNacionalidad2, setShowNacionalidad2 ] = useState(dataCliente.nacionalidad2 ? true : false);
-	const [ showNacionalidad3, setShowNacionalidad3 ] = useState(dataCliente.nacionalidad3 ? true : false);
+	const [showNacionalidad2, setShowNacionalidad2] = useState(dataCliente.nacionalidad2 ? true : false);
+	const [showNacionalidad3, setShowNacionalidad3] = useState(dataCliente.nacionalidad3 ? true : false);
 
-	const [ waringGenerico, setWaringGenerico ] = useState();
+	const [waringGenerico, setWaringGenerico] = useState();
+	const [disableUpdateButton, setDisableUpdateButton] = useState(true);
 
-	const { duplicateDocument, errorMessage, ConsultarData: cliente, loadingClienteStepForm } = useSelector(
+	const { duplicateDocument, errorMessage, ConsultarData: cliente, loadingClienteStepForm, datosClienteSelected } = useSelector(
 		(state) => state.cliente
 	);
 
@@ -77,6 +80,15 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 
 	const location = useLocation();
 	const history = useHistory();
+
+
+	useEffect(() => {
+		if (!datosClienteSelected) {
+			dispatch(getDatosCliente(valueIni.numero_identificacion));
+		} else {
+			dispatch(validateDataPerson(datosClienteSelected, valueIni, setDisableUpdateButton));
+		}
+	}, [datosClienteSelected])
 
 	const fecha_nacimiento = (() => {
 		if (dataCliente.fecha_nacimiento && dataCliente.fecha_nacimiento.length > 10) {
@@ -162,6 +174,11 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 		}
 	};
 
+	const updateClient = () => {
+		dispatch(updateDataClient(datosClienteSelected, setDisableUpdateButton));
+	}
+
+
 	return (
 		<Formik
 			initialValues={valueIni}
@@ -187,7 +204,7 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 
 						return schema;
 					})
-					.test('validar identificación con tipo de identificacion', 'Cédula no válida', function(value) {
+					.test('validar identificación con tipo de identificacion', 'Cédula no válida', function (value) {
 						var tipo_documento = this.parent.tipo_documento;
 						if (typeof value === 'string' && value.length === 10 && tipo_documento === 'C') {
 							var digits = value.split('').map(Number);
@@ -231,7 +248,7 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 				// fecha_expiracion_documento: Yup.date().nullable(),
 				fecha_expiracion_documento: Yup.date()
 					.nullable()
-					.test('validar fecha de expiracion', 'La fecha no puede ser menor a la fecha actual', function(
+					.test('validar fecha de expiracion', 'La fecha no puede ser menor a la fecha actual', function (
 						value
 					) {
 						let feExpiracion = dayjs(value);
@@ -284,18 +301,18 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 					}),
 				// numero_contribuyente_us: Yup.string().nullable(),
 				/* .test('validar fecha de jubilacion', 'Ingrese una fecha de jubilacion Valida', function (values) {
-                    var hoy = new Date()
-                    var fechajubilado = new Date(this.parent.fecha_jubilacion);
-                    var años = hoy.getFullYear() - fechajubilado.getFullYear();
-                    var diferenciaMeses = hoy.getMonth() - fechajubilado.getMonth();
-                    var diferenciaDias = hoy.getDay() - fechajubilado.getDay();
+					var hoy = new Date()
+					var fechajubilado = new Date(this.parent.fecha_jubilacion);
+					var años = hoy.getFullYear() - fechajubilado.getFullYear();
+					var diferenciaMeses = hoy.getMonth() - fechajubilado.getMonth();
+					var diferenciaDias = hoy.getDay() - fechajubilado.getDay();
 
-                    if (años <= 0 && diferenciaMeses <= 0 && diferenciaDias <= 0) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                 }) */
+					if (años <= 0 && diferenciaMeses <= 0 && diferenciaDias <= 0) {
+						return true;
+					} else {
+						return false;
+					}
+				 }) */
 				fecha_nacimiento_cliente: Yup.date(),
 				apoderado_nombres: Yup.string().when('fecha_nacimiento_cliente', (fecha_nacimiento_cliente, schema) => {
 					var hoy = new Date();
@@ -359,13 +376,13 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 					let nombre = `${values.primer_apellido.trim()} ${values.segundo_apellido
 						? values.segundo_apellido.trim()
 						: ''} ${values.primer_nombre.trim()} ${values.segundo_nombre
-						? values.segundo_nombre.trim()
-						: ''}`;
+							? values.segundo_nombre.trim()
+							: ''}`;
 
 					if (nombre.trim().toUpperCase() != dataCliente.nombre_registro_civil.trim().toUpperCase()) {
 						setWaringGenerico(
 							'Los nombres y apellidos que quieres guardar no coinciden con los enviados desde el Registro Civil: ' +
-								dataCliente.nombre_registro_civil
+							dataCliente.nombre_registro_civil
 						);
 
 						setErrors({
@@ -390,7 +407,7 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 				};
 
 				let onError = (response) => {
-					
+
 					setSubmitting(false);
 					enqueueSnackbar('Hubo un error guardando el cliente', {
 						variant: 'error'
@@ -448,7 +465,7 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 											<Field
 												error={Boolean(
 													(touched.numero_identificacion && errors.numero_identificacion) ||
-														duplicateDocument
+													duplicateDocument
 												)}
 												helperText={
 													(touched.numero_identificacion && errors.numero_identificacion) ||
@@ -487,7 +504,7 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 											<Field
 												error={Boolean(
 													touched.fecha_expiracion_documento &&
-														errors.fecha_expiracion_documento
+													errors.fecha_expiracion_documento
 												)}
 												helperText={
 													touched.fecha_expiracion_documento &&
@@ -510,7 +527,23 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 						{/* Elemento 2 */}
 						<Box mt={3}>
 							<Card>
-								<CardHeader title="Bio" />
+								<div className={classes.FlexBetween}>
+									<CardHeader title="Bio" />
+									{/* <Fab onClick={updateClient} className={classes.buttonUpdate} size='small' variant="extended">
+										<SyncIcon className={classes.extendedIcon} />
+										UPDATE
+									</Fab> */}
+									<Button
+										className={classes.buttonUpdate}
+										color="primary"
+										onClick={updateClient}
+										variant="contained"
+										startIcon={<SyncIcon />}
+										disabled={disableUpdateButton}
+									>
+										SYNC
+									</Button>
+								</div>
 								<Divider />
 								<CardContent>
 									<Fragment>
@@ -585,7 +618,7 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 												<Field
 													error={Boolean(
 														touched.fecha_nacimiento_cliente &&
-															errors.fecha_nacimiento_cliente
+														errors.fecha_nacimiento_cliente
 													)}
 													helperText={
 														touched.fecha_nacimiento_cliente &&
@@ -632,7 +665,7 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 												<Field
 													error={Boolean(
 														touched.grado_instruccion_cliente &&
-															errors.grado_instruccion_cliente
+														errors.grado_instruccion_cliente
 													)}
 													helperText={
 														touched.grado_instruccion_cliente &&
@@ -652,7 +685,7 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 												<Field
 													error={Boolean(
 														touched.titulo_obtenido_cliente &&
-															errors.titulo_obtenido_cliente
+														errors.titulo_obtenido_cliente
 													)}
 													helperText={
 														touched.titulo_obtenido_cliente &&
@@ -961,7 +994,7 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 												</Grid>
 												<Grid item md={6} xs={12}>
 													<Grid container spacing={2}>
-														{[ 'SI', 'NO' ].map((opcion) => (
+														{['SI', 'NO'].map((opcion) => (
 															<Grid item md={6} xs={12}>
 																<Button
 																	className={
@@ -1083,7 +1116,7 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 													<Field
 														error={Boolean(
 															touched.numero_contribuyente_us &&
-																errors.numero_contribuyente_us
+															errors.numero_contribuyente_us
 														)}
 														helperText={
 															touched.numero_contribuyente_us &&
@@ -1160,7 +1193,7 @@ const ClienteCreateAndEditarViewStepOne = ({ dataCliente, actionType, cedulaCli,
 											variant="contained"
 										>
 											Continuar
-										<ArrowForwardIcon />
+											<ArrowForwardIcon />
 										</Button>
 									)}
 								</Grid>

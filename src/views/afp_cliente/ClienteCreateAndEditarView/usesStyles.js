@@ -20,8 +20,8 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)',
     },
     LabelGender: {
-        marginTop:'1.5em',
-        marginRight:'1.5em',
+        marginTop: '1.5em',
+        marginRight: '1.5em',
     },
     SpaceRadio: {
         paddingLeft: '2em',
@@ -80,6 +80,19 @@ const useStyles = makeStyles((theme) => ({
             transform: 'translateY(50px)',
         } */
     },
+    FlexBetween: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    extendedIcon: {
+        marginRight: theme.spacing(1),
+        fontSize: '20px'
+    },
+    buttonUpdate: {
+        marginRight: '15px',
+        fontSize: '13px'
+    }
 }));
 
 export default useStyles;

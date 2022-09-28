@@ -229,7 +229,9 @@ const initialState = {
 	mensajesBeneficiosAdicionales: {},
 	errorBeneficiosAdicionales: '',
 	loadingDocumentosAdjuntos: false,
-	loadingGenerate: []
+	loadingGenerate: [],
+	datosClienteSelected: null,
+	errorDatosClienteSelected: ''
 };
 
 const slice = createSlice({
@@ -270,9 +272,9 @@ const slice = createSlice({
 
 			if (indexUpdate != -1) {
 				state.archivosAdjuntos[indexUpdate] = adjunto;
-				state.archivosAdjuntos = [ ...state.archivosAdjuntos ];
+				state.archivosAdjuntos = [...state.archivosAdjuntos];
 			} else {
-				state.archivosAdjuntos = [ ...state.archivosAdjuntos, adjunto ];
+				state.archivosAdjuntos = [...state.archivosAdjuntos, adjunto];
 			}
 
 			let indexUpdateCheckList = state.adjuntosCheckList.findIndex(
@@ -284,7 +286,7 @@ const slice = createSlice({
 					...state.adjuntosCheckList[indexUpdateCheckList],
 					estado: 'Pendiente'
 				};
-				state.adjuntosCheckList = [ ...state.adjuntosCheckList ];
+				state.adjuntosCheckList = [...state.adjuntosCheckList];
 			}
 
 			state.adjuntosUploading = false;
@@ -299,11 +301,11 @@ const slice = createSlice({
 			let index = state.archivosAdjuntos.findIndex((item) => item.idAdjunto == adjunto.id);
 
 			if (index != -1) {
-				const _archivos = [ ...state.archivosAdjuntos ];
+				const _archivos = [...state.archivosAdjuntos];
 				_archivos[index] = adjunto;
-				state.archivosAdjuntos = [ ..._archivos ];
+				state.archivosAdjuntos = [..._archivos];
 			} else {
-				state.archivosAdjuntos = [ ...state.archivosAdjuntos, adjunto ];
+				state.archivosAdjuntos = [...state.archivosAdjuntos, adjunto];
 			}
 		},
 		_postEnviarDocumentosError(state, action) {
@@ -447,7 +449,7 @@ const slice = createSlice({
 		},
 		getOportunidad(state, action) {
 			state.Oportunidad = action.payload;
-			
+
 			state.mensajesBeneficiosAdicionales = '';
 			state.errorBeneficiosAdicionales = '';
 
@@ -474,7 +476,7 @@ const slice = createSlice({
 				state.loadingGenerate = [];
 			}
 			state.loadingGenerate[indexGenerating] = loadingValue;
-			state.loadingGenerate = [ ...state.loadingGenerate ];
+			state.loadingGenerate = [...state.loadingGenerate];
 		},
 		generateContratoHorizonteSuccess(state, action) {
 			const adjunto = action.payload;
@@ -483,9 +485,9 @@ const slice = createSlice({
 
 			if (indexUpdate != -1) {
 				state.archivosAdjuntos[indexUpdate] = adjunto;
-				state.archivosAdjuntos = [ ...state.archivosAdjuntos ];
+				state.archivosAdjuntos = [...state.archivosAdjuntos];
 			} else {
-				state.archivosAdjuntos = [ ...state.archivosAdjuntos, adjunto ];
+				state.archivosAdjuntos = [...state.archivosAdjuntos, adjunto];
 			}
 		},
 		generateAutorizacionBancariaSuccess(state, action) {
@@ -495,9 +497,9 @@ const slice = createSlice({
 
 			if (indexUpdate != -1) {
 				state.archivosAdjuntos[indexUpdate] = adjunto;
-				state.archivosAdjuntos = [ ...state.archivosAdjuntos ];
+				state.archivosAdjuntos = [...state.archivosAdjuntos];
 			} else {
-				state.archivosAdjuntos = [ ...state.archivosAdjuntos, adjunto ];
+				state.archivosAdjuntos = [...state.archivosAdjuntos, adjunto];
 			}
 		},
 		generateAutorizacionRolSuccess(state, action) {
@@ -507,9 +509,9 @@ const slice = createSlice({
 
 			if (indexUpdate != -1) {
 				state.archivosAdjuntos[indexUpdate] = adjunto;
-				state.archivosAdjuntos = [ ...state.archivosAdjuntos ];
+				state.archivosAdjuntos = [...state.archivosAdjuntos];
 			} else {
-				state.archivosAdjuntos = [ ...state.archivosAdjuntos, adjunto ];
+				state.archivosAdjuntos = [...state.archivosAdjuntos, adjunto];
 			}
 		},
 		getOportunidadPrima(state, action) {
@@ -697,6 +699,12 @@ const slice = createSlice({
 			state.documentosAdjuntos = [];
 			state.adjuntosCheckList = [];
 			state.archivosAdjuntos = [];
+		},
+		setDatosClient(state, action) {
+			state.datosClienteSelected = action.payload;
+		},
+		setErrorDatosClient(state, action) {
+			state.errorDatosClienteSelected = action.payload;
 		}
 	}
 });
@@ -761,7 +769,7 @@ export const postClientesCrear = (data, step, cedulaCli, onSuccess, onError) => 
 			dispatch(slice.actions.getClienteByIdSuccess(response.data));
 			// dispatch(slice.actions.createOportunity(true));
 			dispatch(slice.actions.postClientesCrearSuccess());
-			
+
 			if (response.data.empresa) {
 				dispatch(setEmpresa(response.data.empresa));
 			}
@@ -805,7 +813,7 @@ export const getAlertSearchEmpty = () => async (dispatch) => {
 };
 
 export const postAportesClientesStore = (body, onSuccess) => async (dispatch) => {
-	
+
 	console.log('postAportesClientesStore')
 	dispatch(slice.actions.postAportesClientesStore());
 	axs({
@@ -813,8 +821,8 @@ export const postAportesClientesStore = (body, onSuccess) => async (dispatch) =>
 		url: baseurl + '/afp/crm/oportunidad/crear',
 		data: body
 	})
-		.then(function(response) {
-			
+		.then(function (response) {
+
 
 			let { success, data } = response.data;
 
@@ -828,8 +836,8 @@ export const postAportesClientesStore = (body, onSuccess) => async (dispatch) =>
 				dispatch(slice.actions.postAportesClientesStoreError());
 			}
 		})
-		.catch(function(error) {
-			
+		.catch(function (error) {
+
 			console.log(error);
 			dispatch(slice.actions.getAlertIfNotStore(error));
 			dispatch(slice.actions.postAportesClientesStoreError());
@@ -845,7 +853,7 @@ export const getFondoAporteList = (cedula, fondoSeleccionado) => async (dispatch
 			tipo_fondo: fondoSeleccionado.codigo
 		});
 
-		dispatch(slice.actions.getFondoAporteList([ response.data, fondoSeleccionado ]));
+		dispatch(slice.actions.getFondoAporteList([response.data, fondoSeleccionado]));
 		dispatch(slice.actions.loadData(false));
 		dispatch(slice.actions.createOportunity(true));
 	} catch (error) {
@@ -901,7 +909,7 @@ export const getFondoAporteDelete = (id_cliente, identificacion) => async (dispa
 		} else {
 			return 500;
 		}
-	} catch (error) {}
+	} catch (error) { }
 };
 
 export const getFondoAporteEdit = (id_fondo) => async (dispatch) => {
@@ -934,12 +942,12 @@ export const getFondoAporteUpdate = (body, onSuccess) => async (dispatch) => {
 		url: baseurl + '/afp/crm/oportunidad/actualizar/aportes',
 		data: body
 	})
-		.then(function(response) {
+		.then(function (response) {
 			// dispatch(slice.actions.getFondoAporteUpdate(response.data));
 			// dispatch(slice.actions.getOportunidad(response.data.data));
 			// redirectCb();
 
-			
+
 
 
 			let { success, data } = response.data;
@@ -955,8 +963,8 @@ export const getFondoAporteUpdate = (body, onSuccess) => async (dispatch) => {
 
 			// dispatch(getFondoAporteList(body.numero_identificacion));
 		})
-		.catch(function(error) {
-			
+		.catch(function (error) {
+
 
 			console.log(error);
 			dispatch(slice.actions.getAlertIfNotStore(change));
@@ -1336,5 +1344,60 @@ export const updateEmpresaOportunidad = (empresaOportuindad, onSuccess, onError)
 		// dispatch(slice.actions.getFondoAporteUpdateError());
 	}
 };
+
+
+export const getDatosCliente = (cedula) => async (dispatch) => {
+	try {
+
+		const response = await axs.get(baseurl + `/afp/cliente/datos/${cedula}`);
+
+		let { success, cliente } = response.data;
+		console.log(response.data)
+		if (success) {
+			dispatch(slice.actions.setDatosClient(cliente));
+		} else {
+			dispatch(slice.actions.setErrorDatosClient(response.data.message));
+		}
+	} catch (error) {
+		console.log(error);
+		dispatch(slice.actions.getDatosClienteError());
+	}
+}
+
+
+export const validateDataPerson = (genesisData, ownData, state) => async (dispatch) => {
+	console.log('genesis: ', genesisData)
+	console.log('own: ', ownData)
+
+
+	if ((new Date(genesisData.fecha_nacimiento)).toLocaleDateString() != (new Date(ownData.fecha_nacimiento_cliente)).toLocaleDateString()) {
+		state(false)
+	}
+}
+
+
+export const updateDataClient = (genesisData, state) => async (dispatch) => {
+	console.log('genesis: ', genesisData)
+
+	try {
+
+		const response = await axs.put(baseurl + `/afp/cliente/update`, genesisData);
+
+		let { success, cliente } = response.data;
+
+		console.log(response.data)
+		if (success) {
+			dispatch(getClientesSearch(cliente.codigo_cliente, state))
+			state(true)
+		} else {
+			alert('Ha ocurrido un error, intente nuevamente.')
+			state(false)
+		}
+
+	} catch (error) {
+		console.log(error);
+		alert('Ocurrió un error actualizando los datos del cliente')
+	}
+}
 
 export default slice;

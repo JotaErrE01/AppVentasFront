@@ -77,28 +77,28 @@ const mapRows = (data, status, sortModel, statusArr) => {
 
 const gridConfig = (data, status, sortModel, statusArr, isAprobador) => {
 
- 
-        const warining = isAprobador ? {
-            field: 'regularizarEmpresa',
-            headerName: 'Empresa',
-            width: 110,
-            align: 'center',
-            renderCell: (params) => {
-                const regularizar = params.value;
 
-                if (regularizar) {
-                    return (
-                        <IconButton onClick={() => { }} >
-                            <WarnIcon style={{ color: amber[200] }} />
-                        </IconButton>
-                    );
-                }
+    const warining = isAprobador ? {
+        field: 'regularizarEmpresa',
+        headerName: 'Empresa',
+        width: 110,
+        align: 'center',
+        renderCell: (params) => {
+            const regularizar = params.value;
 
-                return (<IconButton onClick={() => { }} >
-                    <DoneIcon style={{ color: green[400] }} />
-                </IconButton>);
+            if (regularizar) {
+                return (
+                    <IconButton onClick={() => { }} >
+                        <WarnIcon style={{ color: amber[200] }} />
+                    </IconButton>
+                );
             }
-        }:{}
+
+            return (<IconButton onClick={() => { }} >
+                <DoneIcon style={{ color: green[400] }} />
+            </IconButton>);
+        }
+    } : {}
 
     return {
 
@@ -153,7 +153,7 @@ function TabPanel(props) {
 };
 
 
-const OportunidadesGrid = ({ data, rows, loading, onPageChange, setEdit, sort , isAprobador}) => {
+const OportunidadesGrid = ({ data, rows, loading, onPageChange, setEdit, sort, isAprobador }) => {
 
     const { user } = useAuth();
 
@@ -163,8 +163,8 @@ const OportunidadesGrid = ({ data, rows, loading, onPageChange, setEdit, sort , 
     const theme = useTheme();
     const [value, setValue] = React.useState(0);
 
-   
-    
+
+
 
 
 
@@ -173,13 +173,13 @@ const OportunidadesGrid = ({ data, rows, loading, onPageChange, setEdit, sort , 
         {
             "registrado": [8],
             "validación": [12, 13],
-            "firma": [1, 2, 3],            
+            "firma": [1, 2, 3],
             // "pre operación": [15, 16, 17],
             "operación": [4, 5, 6],
             "alta": [7, 11],
         }
         :
-        
+
         {
             "Por revisar": [4, 5],
             "alta": [7, 11],
@@ -231,19 +231,19 @@ const OportunidadesGrid = ({ data, rows, loading, onPageChange, setEdit, sort , 
 
     function a11yProps(index) {
         return {
-          id: `wrapped-tab-${index}`,
-          'aria-controls': `wrapped-tabpanel-${index}`,
+            id: `wrapped-tab-${index}`,
+            'aria-controls': `wrapped-tabpanel-${index}`,
         };
     }
 
     return (
 
         <div className={classes.root}>
-            <AppBar 
-            
-            position="static" 
-            
-            color="default">
+            <AppBar
+
+                position="static"
+
+                color="default">
                 <Tabs
                     value={value}
                     onChange={changeTab}
@@ -251,7 +251,7 @@ const OportunidadesGrid = ({ data, rows, loading, onPageChange, setEdit, sort , 
                     textColor="primary"
                     variant="scrollable"
                     scrollButtons="auto"
-          
+
                 >
                     {
                         grids.map((item, index) => {
